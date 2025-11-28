@@ -1,0 +1,17 @@
+#include <iostream>
+using namespace std;
+void rechargeBalance(int &balance, int amount) 
+{
+    balance = balance+amount;  
+}
+int main() 
+{
+    int balance = 200;
+    int recharge = 100;
+
+    rechargeBalance(balance, recharge);
+
+    cout << "Recharge successful. Updated balance: " << balance << endl;
+
+    return 0;
+}
