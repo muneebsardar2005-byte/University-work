@@ -1,0 +1,122 @@
+#include <iostream>
+#include <vector>
+#include <fstream>
+using namespace std;
+
+struct Student {
+    int roll;
+    string name;
+    int marks;
+    char grade;
+};
+
+char calculateGrade(int marks);
+void save(vector<Student>& s);
+void load(vector<Student>& s);
+void searchStudent(vector<Student> s);
+void sortStudents(vector<Student>& s);
+
+int main() {
+    vector<Student> students;
+    int choice;
+
+    load(students);
+
+    do {
+        cout << "\n--- Grading System ---\n";
+        cout << "1. Add Student\n";
+        cout << "2. Display Students\n";
+        cout << "3. Search Student\n";
+        cout << "4. Sort by Roll No\n";
+        cout << "0. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        if (choice == 1) {
+            Student s;
+            cout << "Roll No: ";
+            cin >> s.roll;
+            cin.ignore();
+            cout << "Name: ";
+            getline(cin, s.name);
+            cout << "Marks: ";
+            cin >> s.marks;
+            s.grade = calculateGrade(s.marks);
+            students.push_back(s);
+        }
+        else if (choice == 2) {
+            for (int i = 0; i < students.size(); i++) {
+                cout << students[i].roll << " "
+                     << students[i].name << " "
+                     << students[i].grade << endl;
+            }
+        }
+        else if (choice == 3) {
+            searchStudent(students);
+        }
+        else if (choice == 4) {
+            sortStudents(students);
+            cout << "Sorted successfully.\n";
+        }
+
+    } while (choice != 0);
+
+    save(students);
+    return 0;
+}
+
+char calculateGrade(int marks) {
+    if (marks >= 80) return 'A';
+    else if (marks >= 60) return 'B';
+    else if (marks >= 40) return 'C';
+    else return 'F';
+}
+
+void searchStudent(vector<Student> s) {
+    int roll;
+    cout << "Enter roll number to search: ";
+    cin >> roll;
+
+    for (int i = 0; i < s.size(); i++) {
+        if (s[i].roll == roll) {
+            cout << "Found: " << s[i].name << " Grade: " << s[i].grade << endl;
+            return;
+        }
+    }
+    cout << "Student not found.\n";
+}
+
+void sortStudents(vector<Student>& s) {
+    for (int i = 0; i < s.size() - 1; i++) {
+        for (int j = 0; j < s.size() - i - 1; j++) {
+            if (s[j].roll > s[j + 1].roll) {
+                Student temp = s[j];
+                s[j] = s[j + 1];
+                s[j + 1] = temp;
+            }
+        }
+    }
+}
+
+void save(vector<Student>& s) {
+    ofstream file("grades.txt");
+    for (int i = 0; i < s.size(); i++) {
+        file << s[i].roll << endl
+             << s[i].name << endl
+             << s[i].marks << endl;
+    }
+    file.close();
+}
+
+void load(vector<Student>& s) {
+    ifstream file("grades.txt");
+    Student st;
+    while (file >> st.roll) {
+        file.ignore();
+        getline(file, st.name);
+        file >> st.marks;
+        st.grade = calculateGrade(st.marks);
+        s.push_back(st);
+    }
+    file.close();
+}

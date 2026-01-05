@@ -1,0 +1,114 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+struct Student {
+    int roll;
+    string name;
+    int attendance;
+};
+
+void save(Student s[], int n);
+void load(Student s[], int &n);
+void searchStudent(Student s[], int n);
+void sortStudents(Student s[], int n);
+
+int main() {
+    Student students[50];   // ARRAY (USED PROPERLY)
+    int n = 0;
+    int choice;
+
+    load(students, n);
+
+    do {
+        cout << "\n--- Attendance System ---\n";
+        cout << "1. Add Student\n";
+        cout << "2. Display Students\n";
+        cout << "3. Search Student\n";
+        cout << "4. Sort by Roll No\n";
+        cout << "0. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        if (choice == 1) {
+            cout << "Roll No: ";
+            cin >> students[n].roll;
+            cin.ignore();
+            cout << "Name: ";
+            getline(cin, students[n].name);
+            cout << "Attendance: ";
+            cin >> students[n].attendance;
+            n++;
+        }
+        else if (choice == 2) {
+            for (int i = 0; i < n; i++) {
+                cout << students[i].roll << " "
+                     << students[i].name << " ";
+
+                if (students[i].attendance < 20)
+                    cout << "Short Attendance\n";
+                else
+                    cout << "Eligible\n";
+            }
+        }
+        else if (choice == 3) {
+            searchStudent(students, n);
+        }
+        else if (choice == 4) {
+            sortStudents(students, n);
+            cout << "Sorted successfully.\n";
+        }
+
+    } while (choice != 0);
+
+    save(students, n);
+    return 0;
+}
+
+void searchStudent(Student s[], int n) {
+    int roll;
+    cout << "Enter roll number to search: ";
+    cin >> roll;
+
+    for (int i = 0; i < n; i++) {
+        if (s[i].roll == roll) {
+            cout << "Found: " << s[i].name
+                 << " Attendance: " << s[i].attendance << endl;
+            return;
+        }
+    }
+    cout << "Student not found.\n";
+}
+
+void sortStudents(Student s[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (s[j].roll > s[j + 1].roll) {
+                Student temp = s[j];
+                s[j] = s[j + 1];
+                s[j + 1] = temp;
+            }
+        }
+    }
+}
+
+void save(Student s[], int n) {
+    ofstream file("attendance.txt");
+    for (int i = 0; i < n; i++) {
+        file << s[i].roll << endl
+             << s[i].name << endl
+             << s[i].attendance << endl;
+    }
+    file.close();
+}
+
+void load(Student s[], int &n) {
+    ifstream file("attendance.txt");
+    while (file >> s[n].roll) {
+        file.ignore();
+        getline(file, s[n].name);
+        file >> s[n].attendance;
+        n++;
+    }
+    file.close();
+}

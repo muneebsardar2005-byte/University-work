@@ -1,0 +1,118 @@
+#include <iostream>
+#include <vector>
+#include <fstream>
+using namespace std;
+
+struct Book {
+    int id;
+    string title;
+};
+
+
+void show();
+void show(string msg);
+
+
+void addBook(vector<Book>& books);
+void saveBooks(vector<Book>& books);
+void loadBooks(vector<Book>& books);
+
+
+void displayBooks(vector<Book> books);
+void searchBook(vector<Book> books);
+void sortBooks(vector<Book>& books);
+
+int main() {
+    vector<Book> books;
+    int choice;
+
+    loadBooks(books);
+
+    do {
+        show("\n--- Library Management System ---");
+        cout << "1. Add Book\n2. Display Books\n3. Search Book\n4. Sort Books\n5. Save\n0. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addBook(books); break;
+            case 2: displayBooks(books); break;
+            case 3: searchBook(books); break;
+            case 4: sortBooks(books); break;
+            case 5: saveBooks(books); break;
+            case 0: saveBooks(books); show("Exiting..."); break;
+            default: show("Invalid choice");
+        }
+    } while (choice != 0);
+
+    return 0;
+}
+
+void addBook(vector<Book>& books) {
+    Book b;
+    cout << "Enter Book ID: ";
+    cin >> b.id;
+    cin.ignore();
+    cout << "Enter Book Title: ";
+    getline(cin, b.title);
+    books.push_back(b);
+}
+
+void displayBooks(vector<Book> books) {
+    for (int i = 0; i < books.size(); i++) {
+        cout << books[i].id << " - " << books[i].title << endl;
+    }
+}
+
+void searchBook(vector<Book> books) {
+    int id;
+    cout << "Enter Book ID to search: ";
+    cin >> id;
+
+    for (int i = 0; i < books.size(); i++) {
+        if (books[i].id == id) {
+            cout << "Book Found: " << books[i].title << endl;
+            return;
+        }
+    }
+    cout << "Book not found.\n";
+}
+
+void sortBooks(vector<Book>& books) {
+    for (int i = 0; i < books.size() - 1; i++) {
+        for (int j = 0; j < books.size() - i - 1; j++) {
+            if (books[j].id > books[j + 1].id) {
+                Book temp = books[j];
+                books[j] = books[j + 1];
+                books[j + 1] = temp;
+            }
+        }
+    }
+}
+
+void saveBooks(vector<Book>& books) {
+    ofstream file("library.txt");
+    for (int i = 0; i < books.size(); i++) {
+        file << books[i].id << endl << books[i].title << endl;
+    }
+    file.close();
+}
+
+void loadBooks(vector<Book>& books) {
+    ifstream file("library.txt");
+    Book b;
+    while (file >> b.id) {
+        file.ignore();
+        getline(file, b.title);
+        books.push_back(b);
+    }
+    file.close();
+}
+
+void show() {
+    cout << "Library System\n";
+}
+
+void show(string msg) {
+    cout << msg << endl;
+}
