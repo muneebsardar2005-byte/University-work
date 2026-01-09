@@ -14,7 +14,7 @@ void searchStudent(Student s[], int n);
 void sortStudents(Student s[], int n);
 
 int main() {
-    Student students[50];   // ARRAY (USED PROPERLY)
+    Student students[50];   
     int n = 0;
     int choice;
 
